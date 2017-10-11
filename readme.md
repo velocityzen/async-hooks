@@ -3,7 +3,7 @@
 [![NPM Version](https://img.shields.io/npm/v/async-hooks.svg?style=flat-square)](https://www.npmjs.com/package/async-hooks)
 [![NPM Downloads](https://img.shields.io/npm/dt/async-hooks.svg?style=flat-square)](https://www.npmjs.com/package/async-hooks)
 
-Async 'will' and 'did' hooks for any methods
+Async 'will' and 'did' hooks for any methods.
 
 ## install
 
@@ -52,15 +52,25 @@ myClass.did('method', res => {
 
 ### (object)
 
-Adds `will` and `did` methods to the `object`.
+Adds `will` and `did` methods to the `object`. Both `will` and `did` are lazy methods. So to use auto hooks you still should run it as:
+
+```js
+hooks(this)
+  .will('method')
+  .will('anotherMethod')
+```
 
 ### will(method, hook)
 
-Adds will (runs before) `hook` function to the `method` only if `method` exists and it is a function. `hook` function will recieve all argumnets as the original method. If `hook` function is async it should return Promise.
+Adds will (runs before) `hook` function to the `method` only if `method` exists and it is a function. `hook` function will receive all arguments as the original method. If `hook` function is async it should return a Promise.
+
+**If object has 'willMethod' it will be run before all other hooks**
 
 ### did(method, hook)
 
-Adds did (runs after) `hook` function to the `method` only if `method` exists and it is a function. `hook` function will recieve result of the original method and should return result or Promise.
+Adds did (runs after) `hook` function to the `method` only if `method` exists and it is a function. `hook` function will receive a result of the original method or previous hook and should return result or Promise.
+
+**If object has 'didMethod' it will be run after all other hooks**
 
 License MIT;
 

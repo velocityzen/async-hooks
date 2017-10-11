@@ -106,3 +106,35 @@ test.cb('adds several will and did hooks', t => {
     })
     .catch(err => t.falsy(err));
 });
+
+test.cb('checks auto hooks order', t => {
+  Test.prototype.willAuto = function(data) {
+    data.number = 0;
+  }
+
+  Test.prototype.auto = function(data) {
+    return Promise.resolve(data.number + this.addition);
+  }
+
+  Test.prototype.didAuto = function() {
+    return 0;
+  }
+
+  const testCase = new Test(2);
+
+  testCase.will('auto', data => {
+    t.is(data.number, 0);
+  });
+
+  testCase.did('auto', res => {
+    t.is(res, 2);
+    return res;
+  });
+
+  testCase
+    .auto({ number: 2 })
+    .then(res => {
+      t.is(res, 0);
+      t.end();
+    })
+});

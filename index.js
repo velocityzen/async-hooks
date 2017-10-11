@@ -2,20 +2,31 @@
 const Promise = require('bluebird');
 const HOOKS = Symbol('Property for saving async hooks');
 
+const toCamelCase = function(str) {
+  return str.replace(/[-_](\w)/g, function(matches, letter) {
+    return letter.toUpperCase();
+  });
+};
+
 const create = function(ctx, name) {
   const method = ctx[name];
   const hooks = ctx[HOOKS] || (ctx[HOOKS] = {});
   const methodHooks = hooks[name] = {
+    pre: ctx[toCamelCase(`will-${name}`)],
     will: [],
-    did: []
+    did: [],
+    post: ctx[toCamelCase(`did-${name}`)]
   };
 
   ctx[name] = function hooksWrapper(...args) {
+    const will = methodHooks.pre ? [ methodHooks.pre ].concat(methodHooks.will) : methodHooks.will;
+    const did = methodHooks.post ? methodHooks.did.concat(methodHooks.post) : methodHooks.did;
+
     return Promise
-      .reduce(methodHooks.will, (res, func) => func.apply(undefined, args), {})
+      .reduce(will, (res, func) => func.apply(ctx, args), {})
       .then(() => method.apply(ctx, args))
       .then(res => Promise
-        .reduce(methodHooks.did, (res, func) => func(res), res)
+        .reduce(did, (res, func) => func.call(ctx, res), res)
       )
   };
 
@@ -38,15 +49,18 @@ const get = function(ctx, name) {
 
 const will = function(name, hook) {
   const hooks = get(this, name);
-  hooks.will.push(hook);
+  hook && hooks.will.push(hook);
+  return this;
 }
 
 const did = function(name, hook) {
   const hooks = get(this, name);
-  hooks.did.push(hook);
+  hook && hooks.did.push(hook);
+  return this;
 }
 
 module.exports = ctx => {
   ctx.will = will;
   ctx.did = did;
+  return ctx;
 };
