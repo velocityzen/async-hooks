@@ -1,10 +1,10 @@
 {
   "name": "async-hooks",
-  "version": "1.0.0",
+  "version": "0.0.9",
   "description": "Async 'will' and 'did' hooks for any methods",
   "main": "index.js",
   "scripts": {
-    "test": "ava"
+    "test": "nyc ava"
   },
   "repository": {
     "type": "git",
@@ -26,6 +26,7 @@
     "bluebird": "^3.5.1"
   },
   "devDependencies": {
-    "ava": "^0.22.0"
+    "ava": "^0.22.0",
+    "nyc": "^11.2.1"
   }
 }
