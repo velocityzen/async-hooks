@@ -138,3 +138,26 @@ test.cb('checks auto hooks order', t => {
       t.end();
     })
 });
+
+test('fails when auto did hook fails', t => {
+  const Test = function() {
+    this.sum = 0;
+    hooks(this).will('add')
+  }
+
+  Test.prototype.add = function(n) {
+    this.sum += n;
+    return Promise.resolve(this.sum);
+  };
+
+  Test.prototype.didAdd = function(sum) {
+    throw Error(`The sum is ${sum}`);
+  };
+
+  const test = new Test();
+
+  return test
+    .add(10)
+    .then(() => t.fail())
+    .catch(err => t.truthy(err));
+});

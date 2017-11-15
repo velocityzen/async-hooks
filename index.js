@@ -26,7 +26,8 @@ const create = function(ctx, name) {
       .reduce(will, (res, func) => func.apply(ctx, args), {})
       .then(() => method.apply(ctx, args))
       .then(res => Promise
-        .reduce(did, (res, func) => func.call(ctx, res), res)
+        // null in the end to protect from undefined values
+        .reduce(did, (res, func) => func.call(ctx, res), res || null)
       )
   };
 
