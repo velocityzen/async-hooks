@@ -1,6 +1,6 @@
 'use strict';
 const Promise = require('bluebird');
-const HOOKS = Symbol('Property for saving async hooks');
+const HOOKS = Symbol('Async Hooks');
 
 const toCamelCase = function(str) {
   return str.replace(/[-_](\w)/g, function(matches, letter) {
