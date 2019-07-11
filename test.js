@@ -3,16 +3,17 @@ const Promise = require('bluebird');
 const test = require('ava');
 const hooks = require('./index');
 
-const Test = function(addition) {
-  this.addition = addition || 0;
-  hooks(this);
+class Test {
+  constructor(addition) {
+    this.property = true;
+    this.addition = addition || 0;
+    hooks(this);
+  }
+
+  test(arg1, arg2) {
+    return Promise.resolve(arg1.number + arg2.number + this.addition);
+  }
 }
-
-Test.prototype.property = true;
-
-Test.prototype.test = function(arg1, arg2) {
-  return Promise.resolve(arg1.number + arg2.number + this.addition);
-};
 
 test.cb('makes sure orginal method is working', t => {
   const testCase = new Test(2);
@@ -140,19 +141,21 @@ test.cb('checks auto hooks order', t => {
 });
 
 test('fails when auto did hook fails', t => {
-  const Test = function() {
-    this.sum = 0;
-    hooks(this).will('add')
+  class Test {
+    constructor() {
+      this.sum = 0;
+      hooks(this).will('add')
+    }
+
+    add(n) {
+      this.sum += n;
+      return Promise.resolve(this.sum);
+    }
+
+    didAdd(sum) {
+      throw Error(`The sum is ${sum}`);
+    }
   }
-
-  Test.prototype.add = function(n) {
-    this.sum += n;
-    return Promise.resolve(this.sum);
-  };
-
-  Test.prototype.didAdd = function(sum) {
-    throw Error(`The sum is ${sum}`);
-  };
 
   const test = new Test();
 

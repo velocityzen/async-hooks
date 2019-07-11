@@ -3,9 +3,7 @@ const Promise = require('bluebird');
 const HOOKS = Symbol('Property for saving async hooks');
 
 const toCamelCase = function(str) {
-  return str.replace(/[-_](\w)/g, function(matches, letter) {
-    return letter.toUpperCase();
-  });
+  return str.replace(/[-_](\w)/g, (matches, letter) => letter.toUpperCase());
 };
 
 const create = function(ctx, name) {
@@ -18,7 +16,7 @@ const create = function(ctx, name) {
     post: ctx[toCamelCase(`did-${name}`)]
   };
 
-  ctx[name] = function hooksWrapper(...args) {
+  ctx[name] = (...args) => {
     const will = methodHooks.pre ? [ methodHooks.pre ].concat(methodHooks.will) : methodHooks.will;
     const did = methodHooks.post ? methodHooks.did.concat(methodHooks.post) : methodHooks.did;
 
