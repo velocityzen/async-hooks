@@ -1,6 +1,6 @@
 {
   "name": "async-hooks",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Async 'will' and 'did' hooks for any methods",
   "main": "index.js",
   "scripts": {
