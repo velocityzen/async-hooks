@@ -1,5 +1,4 @@
 'use strict';
-const Promise = require('bluebird');
 const test = require('ava');
 const hooks = require('./index');
 
