@@ -58,8 +58,9 @@ const did = function(name, hook) {
   return this;
 }
 
-module.exports = ctx => {
+module.exports = (ctx, ...methods) => {
   ctx.will = will;
   ctx.did = did;
+  methods.forEach(method => ctx.will(method));
   return ctx;
 };

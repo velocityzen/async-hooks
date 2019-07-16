@@ -139,11 +139,37 @@ test.cb('checks auto hooks order', t => {
     })
 });
 
+test('checks undefined result', t => {
+  Test.prototype.empty = function() {
+    return Promise.resolve();
+  }
+
+  Test.prototype.didEmpty = function(res) {
+    t.is(res, undefined);
+  }
+
+  const testCase = new Test(2);
+
+  testCase.will('empty', data => {
+    t.is(data, undefined);
+  });
+
+  testCase.did('empty', res => {
+    t.is(res, null);
+  });
+
+  return testCase
+    .empty()
+    .then(res => {
+      t.is(res, undefined);
+    })
+});
+
 test('fails when auto did hook fails', t => {
   class Test {
     constructor() {
       this.sum = 0;
-      hooks(this).will('add')
+      hooks(this, 'add');
     }
 
     add(n) {

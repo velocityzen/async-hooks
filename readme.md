@@ -16,14 +16,15 @@ Async 'will' and 'did' hooks for any methods.
 const hooks = require('async-hooks');
 
 // Define your class
-const MyClass = function() {
-  // Create hooks
-  hooks(this);
-};
+class MyClass {
+  constructor() {
+    hooks(this);
+  }
 
-MyClass.prototype.method = function(arg1, arg2) {
-  return Promise.resolve();
-};
+  method(arg1, arg2) {
+    return Promise.resolve(arg1 + arg2);
+  }
+}
 
 // Instantiate MyClass
 const myClass = new MyClass();
@@ -50,14 +51,12 @@ myClass.did('method', res => {
 
 ## API
 
-### (object)
+### (object, [method, ...])
 
 Adds `will` and `did` methods to the `object`. Both `will` and `did` are lazy methods. So to use auto hooks you still should run it as:
 
 ```js
-hooks(this)
-  .will('method')
-  .will('anotherMethod')
+hooks(this, 'method', 'anotherMethod');
 ```
 
 ### will(method, hook)
