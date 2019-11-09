@@ -29,6 +29,7 @@ class MyClass {
 // Instantiate MyClass
 const myClass = new MyClass();
 // Now you can add hooks to any class methods
+
 myClass.will('method', (arg1, arg2) => {
   // ... do something
 });
@@ -46,7 +47,6 @@ myClass.did('method', res => {
   // ... do something else
   return res;
 });
-
 ```
 
 ## API
@@ -63,13 +63,17 @@ hooks(this, 'method', 'anotherMethod');
 
 Adds will (runs before) `hook` function to the `method` only if `method` exists and it is a function. `hook` function will receive all arguments as the original method. If `hook` function is async it should return a Promise.
 
-**If object has 'willMethod' it will be run before all other hooks**
+**If object has `will<Method>` it will be run before all other hooks**
 
 ### did(method, hook)
 
 Adds did (runs after) `hook` function to the `method` only if `method` exists and it is a function. `hook` function will receive a result of the original method or previous hook and should return result or Promise.
 
-**If object has 'didMethod' it will be run after all other hooks**
+**If object has `did<Method>` it will be run after all other hooks**
+
+### Errors
+
+**If object has `catch<Method>` it will receive the throws and orginal arguments.**
 
 License MIT;
 
