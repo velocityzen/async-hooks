@@ -21,17 +21,21 @@ const create = function(ctx, name) {
     const will = methodHooks.pre
       ? [methodHooks.pre].concat(methodHooks.will)
       : methodHooks.will;
-    const did = methodHooks.post
-      ? methodHooks.did.concat(methodHooks.post)
-      : methodHooks.did;
 
     const all = Promise.reduce(will, (res, func) => func.apply(ctx, args), {})
       .then(() => method.apply(ctx, args))
-      .then(res =>
-        Promise
-          // null in the end to protect from undefined values
-          .reduce(did, (res, func) => func.call(ctx, res), res || null)
-      );
+      .then(res => {
+        const did = methodHooks.post
+          ? methodHooks.did.concat(methodHooks.post)
+          : methodHooks.did;
+
+        // null in the end to protect from undefined values
+        return Promise.reduce(
+          did,
+          (res, func) => func.call(ctx, res),
+          res || null
+        );
+      });
 
     if (!methodHooks.catch) {
       return all;
